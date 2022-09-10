@@ -5,7 +5,7 @@ from selenium import webdriver
 from selenium.webdriver.common.by import By
 
 from sqlalchemy.ext.declarative import declarative_base
-from sqlalchemy import Column, Integer, String, Date
+from sqlalchemy import Column, Integer, String
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
 
@@ -13,7 +13,15 @@ from dotenv import load_dotenv
 
 load_dotenv()
 
-MAX_PAGE_NUM = 20
+''' To retrieve total number of pages on the website, I can use regex as presented below, 
+but taking into account that it is stationary number I just preferred to hardcode it. 
+
+total_pgs_str = driver.find_element(By.CLASS_NAME, "resultsShowingCount-1707762110")
+total_pgs = (re.search("of(.*)results", total_pgs_str.text)).group(1)
+MAX_PAGE_NUM = int(total_pgs)//40
+'''
+
+MAX_PAGE_NUM = 16
 TODAY = datetime.now().strftime("%d-%m-%Y")
 YESTERDAY = (datetime.now() - timedelta(1)).strftime("%d-%m-%Y")
 PASSWORD = os.getenv('PASSWORD')
@@ -35,7 +43,7 @@ def recreate_database():
 
 
 class Apartment(Base):
-    __tablename__ = "test"
+    __tablename__ = "apartments"
     id = Column(Integer(), primary_key=True)
     Image = Column(String())
     Title = Column(String(), nullable=False)
@@ -70,7 +78,7 @@ for num in range(1, MAX_PAGE_NUM + 1):
     currencies = driver.find_elements(By.CLASS_NAME, "price")
 
     # Convert selenium objects to strings & return readable data.
-    images = [img.get_attribute('data-src') if True else "n/a" for img in images]
+    images = [img.get_attribute('data-src') if img else img.get_attribute('src') for img in images]
     titles = [title.text for title in titles]
     dates = [TODAY if "ago" in date.text else YESTERDAY if "Yesterday" in date.text else date.text.replace('/', '-') for
              date in dates]
@@ -92,7 +100,7 @@ for num in range(1, MAX_PAGE_NUM + 1):
             Currency=currencies[i]
         )
         s.add(apartment)
-        s.commit()
+    s.commit()
 s.close()
 
 driver.quit()
