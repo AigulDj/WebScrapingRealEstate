@@ -20,6 +20,7 @@ To start and project you have to:
 - Run main.py
 
 To upload data to google sheets I used [Sheety](https://sheety.co/). To use that service you have to:
+- Create google sheet and fill the head row (id	Image	Title	Date	Location	Bedroom	Description	Price	Currency)
 - Log into Sheety with your Google Account (the same account that owns the Google Sheet you where you are going to upload data). Make sure the email matches your Google Sheet and Sheety Account.
 - Using the [Sheety Documentations](https://sheety.co/docs/project) get your own Sheety API URL which looks like '//api.sheety.co/username/projectName/sheetName' and use it as a value of SHEET_ENDPOINT variable.
 
