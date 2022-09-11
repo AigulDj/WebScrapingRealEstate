@@ -1,4 +1,5 @@
 import os
+import requests
 from datetime import datetime, timedelta
 
 from selenium import webdriver
@@ -13,28 +14,29 @@ from dotenv import load_dotenv
 
 load_dotenv()
 
-''' To retrieve total number of pages on the website, I can use regex as presented below, 
-but taking into account that it is stationary number I just preferred to hardcode it. 
+''' To retrieve total number of pages on the website, I can use regex like below, but taking into account that 
+it is stationary number I just preferred to hardcode it. 
 
 total_pgs_str = driver.find_element(By.CLASS_NAME, "resultsShowingCount-1707762110")
 total_pgs = (re.search("of(.*)results", total_pgs_str.text)).group(1)
 MAX_PAGE_NUM = int(total_pgs)//40
 '''
 
-MAX_PAGE_NUM = 16
+
 TODAY = datetime.now().strftime("%d-%m-%Y")
 YESTERDAY = (datetime.now() - timedelta(1)).strftime("%d-%m-%Y")
-PASSWORD = os.getenv('PASSWORD')
 CHROME_DRIVER_PATH = "chromedriver"
 
+MAX_PAGE_NUM = 16
+PASSWORD = os.getenv('PASSWORD')
 # Scheme: "postgresql+psycopg2://<USERNAME>:<PASSWORD>@<IP_ADDRESS>:<PORT>/<DATABASE_NAME>"
 DATABASE_URI = f'postgresql+psycopg2://postgres:{PASSWORD}@localhost:5432/apartments'
 
 Base = declarative_base()
 engine = create_engine(DATABASE_URI)
 Session = sessionmaker(bind=engine)  # To interact with the new table created
-driver = webdriver.Chrome(executable_path=CHROME_DRIVER_PATH)
 s = Session()
+driver = webdriver.Chrome(executable_path=CHROME_DRIVER_PATH)
 
 
 def recreate_database():
@@ -64,8 +66,8 @@ recreate_database()  # Change it to Base.metadata.create_all(engine) if no need 
 
 for num in range(1, MAX_PAGE_NUM + 1):
     page_num = f"page-{num}"
-    KIJIJI_URL = f"https://www.kijiji.ca/b-apartments-condos/city-of-toronto/{page_num}/c37l1700273"
-    driver.get(KIJIJI_URL)
+    kijiji_URL = f"https://www.kijiji.ca/b-apartments-condos/city-of-toronto/{page_num}/c37l1700273"
+    driver.get(kijiji_URL)
 
     # Pars & retrieve data, get list of selenium objects.
     images = driver.find_elements(By.CSS_SELECTOR, ".image img")
@@ -101,6 +103,28 @@ for num in range(1, MAX_PAGE_NUM + 1):
         )
         s.add(apartment)
     s.commit()
+
+    # ************** Upload data into Google Sheet **************
+    SHEET_ENDPOINT = "https://api.sheety.co/38e04257acb33302247cfa32529cf529/apartments/add"
+    try:
+        for i in range(len(titles)):
+            body = {
+                "add": {             # Don't forget to change 'add' to your sheet name
+                    "id": i + 1,
+                    "image": images[i],
+                    "title": titles[i],
+                    "date": dates[i],
+                    "location": locations[i],
+                    "bedroom": bedrooms[i],
+                    "description": descriptions[i],
+                    "price": prices[i],
+                    "currency": currencies[i]
+                }
+            }
+            sheet_response = requests.post(url=SHEET_ENDPOINT, json=body)
+    except requests.exceptions.MissingSchema:
+        print('Invalid SHEET_ENDPOINT URL. Valid URL structure is https://api.sheety.co/username/projectName/sheetName')
+
 s.close()
 
 driver.quit()
