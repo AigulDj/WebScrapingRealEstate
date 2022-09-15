@@ -1,5 +1,6 @@
 from googleapiclient.discovery import build
 from google.oauth2 import service_account
+#from gsheets import GoogleSheets
 
 import os
 from datetime import datetime, timedelta
@@ -34,8 +35,6 @@ for num in range(1, MAX_PAGE_NUM + 1):
     prices = driver.find_elements(By.CLASS_NAME, "price")
     currencies = driver.find_elements(By.CLASS_NAME, "price")
 
-    driver.quit()
-
     # Convert selenium objects to strings & return readable data.
     images = [img.get_attribute('data-src') if True else "n/a" for img in images]
     titles = [title.text for title in titles]
@@ -48,6 +47,9 @@ for num in range(1, MAX_PAGE_NUM + 1):
     currencies = [cur.text[0] for cur in currencies]
 
     # Google Sheets ************************************************************************
+    # data = [images, titles, dates, locations, bedrooms, descriptions, prices, currencies]
+    # GoogleSheets.append_data(data)
+
     SERVICE_ACCOUNT_FILE = 'keys.json'
     SCOPES = ['https://www.googleapis.com/auth/spreadsheets']
     creds = None
@@ -57,16 +59,16 @@ for num in range(1, MAX_PAGE_NUM + 1):
     SPREADSHEET_ID = '1wE2kuOx2FPzp9F89Qxj0HVPTa-1rn67MQLSIVawZSC8'
     sheet = service.spreadsheets()
 
-    values = [images, titles, dates, locations, bedrooms, descriptions, prices, currencies]
+    #values = [images, titles, dates, locations, bedrooms, descriptions, prices, currencies]
 
     value_range_body = {
         'majorDimension': 'COLUMNS',
-        'values': values
+        'values': [images, titles, dates, locations, bedrooms, descriptions, prices, currencies]
     }
 
     request = sheet.values().append(spreadsheetId=SPREADSHEET_ID, range="Sheet1!A2",
                                     valueInputOption="USER_ENTERED", body=value_range_body)
     response = request.execute()
 
-
+driver.quit()
 
