@@ -27,7 +27,7 @@ TODAY = datetime.now().strftime("%d-%m-%Y")
 YESTERDAY = (datetime.now() - timedelta(1)).strftime("%d-%m-%Y")
 CHROME_DRIVER_PATH = "chromedriver"
 
-MAX_PAGE_NUM = 16
+MAX_PAGE_NUM = 1
 PASSWORD = os.getenv('PASSWORD')
 # Scheme: "postgresql+psycopg2://<USERNAME>:<PASSWORD>@<IP_ADDRESS>:<PORT>/<DATABASE_NAME>"
 DATABASE_URI = f'postgresql+psycopg2://postgres:{PASSWORD}@localhost:5432/apartments'
