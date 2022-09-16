@@ -1,24 +1,20 @@
-from googleapiclient.discovery import build
-from google.oauth2 import service_account
-#from gsheets import GoogleSheets
-
 import os
 from datetime import datetime, timedelta
 
 from selenium import webdriver
 from selenium.webdriver.common.by import By
-
 from dotenv import load_dotenv
 
-load_dotenv()
+from gsheets import GoogleSheets
 
 MAX_PAGE_NUM = 1
 TODAY = datetime.now().strftime("%d-%m-%Y")
 YESTERDAY = (datetime.now() - timedelta(1)).strftime("%d-%m-%Y")
 PASSWORD = os.getenv('PASSWORD')
 CHROME_DRIVER_PATH = "chromedriver"
-
 driver = webdriver.Chrome(executable_path=CHROME_DRIVER_PATH)
+load_dotenv()
+gsheet = GoogleSheets()
 
 for num in range(1, MAX_PAGE_NUM + 1):
     page_num = f"page-{num}"
@@ -47,28 +43,8 @@ for num in range(1, MAX_PAGE_NUM + 1):
     currencies = [cur.text[0] for cur in currencies]
 
     # Google Sheets ************************************************************************
-    # data = [images, titles, dates, locations, bedrooms, descriptions, prices, currencies]
-    # GoogleSheets.append_data(data)
-
-    SERVICE_ACCOUNT_FILE = 'keys.json'
-    SCOPES = ['https://www.googleapis.com/auth/spreadsheets']
-    creds = None
-    creds = service_account.Credentials.from_service_account_file(SERVICE_ACCOUNT_FILE, scopes=SCOPES)
-
-    service = build('sheets', 'v4', credentials=creds)
-    SPREADSHEET_ID = '1wE2kuOx2FPzp9F89Qxj0HVPTa-1rn67MQLSIVawZSC8'
-    sheet = service.spreadsheets()
-
-    #values = [images, titles, dates, locations, bedrooms, descriptions, prices, currencies]
-
-    value_range_body = {
-        'majorDimension': 'COLUMNS',
-        'values': [images, titles, dates, locations, bedrooms, descriptions, prices, currencies]
-    }
-
-    request = sheet.values().append(spreadsheetId=SPREADSHEET_ID, range="Sheet1!A2",
-                                    valueInputOption="USER_ENTERED", body=value_range_body)
-    response = request.execute()
+    data = [images, titles, dates, locations, bedrooms, descriptions, prices, currencies]
+    gsheet.append_data(data)
 
 driver.quit()
 
