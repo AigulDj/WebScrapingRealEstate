@@ -20,3 +20,6 @@ venv/
 # pycharm
 .idea/
 
+# Google sheets
+keys.json
+

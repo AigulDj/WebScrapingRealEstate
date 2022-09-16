@@ -21,7 +21,6 @@ class GoogleSheets:
             'majorDimension': 'COLUMNS',
             'values': data
         }
-
         request = self.sheet.values().append(spreadsheetId=self.SPREADSHEET_ID, range="Sheet1!A2",
                                              valueInputOption="USER_ENTERED", body=value_range_body)
         response = request.execute()
