@@ -1,0 +1,12 @@
+{
+  "type": "service_account",
+  "project_id": "titanium-bus-362309",
+  "private_key_id": "92f0229ff9fdbea9135b4a970b8ca38ce2468fd5",
+  "private_key": "-----BEGIN PRIVATE KEY-----\nMIIEvQIBADANBgkqhkiG9w0BAQEFAASCBKcwggSjAgEAAoIBAQCjsWu3iSsHT52O\nQpb9/ccfTe0pouDH+hHJbhSn0O6ZwHpmOWDu4sCixwOf6ONI0Fy20x+27LzHXB5P\nEk3M3ZCdtf2ie5WdBfNQ2sbqkWh9ptcgxw62SPizybuFTqOHHeAvKvLMmlF5wk/C\nlSK1Vn3BwlMhq4P/EzhV+IYxSiHJam5FZdX4KbmqWAA78U35AgONDEwSI710CZjz\nxHLWPxZfLYcGKvYh2WAHZwUDviHDoeyuAFp8cSHRRaQwSu25jhqwI6J66u9t1qI+\nN5d4o4rTPx5NbgZEFMdaRSgKGPJojdW1j/5ZYGgPrdHgYiLiDQ1ZoZPGQrvQA1O4\nkBh2jEkjAgMBAAECggEAFlX6wz/xwZ0g/AzlCoJK3eAluNUzQ8ZBEBG3utBdBljH\nutQggGgrbeqm+XZvMPvRctbrEGxMNA3DSvnN6OLgvUxccAPZ/eOWeFVp6A7wSZju\n6NeQj9n0KaAguMdqs+ClOvpqx/VUob8cYAo2grTrEvm/mywKpk8KlFyFfwtFAfUO\nekg5sI4VSy86/iePE9KRH4X+HzHN4YYxuGUO9+TuCX5Zdfzp9LT3lKJQCctDtYgh\nBd7TG6JmOnIOuE41SNvBE4Nxc4mDYGCW/S+j9saKWnn9QeW8O2KTSkU3SGCHoKg+\ncDqpZ9ECqVaXABhjFYrRcTPzyxksRpjOQkQ1YM2MzQKBgQDNH0JtuIROZmOw2wOo\nBfbeiI2+ahn3DPRbihzusK3oZxtyXfTyOmX5g1R00iJ53I0njBVgZ9jjlBCvnBc0\n+IRcTEi0lWbp9i5M1KSjtuonJcjRpVsUdwYgI8m0EHqrP4uuj50aSuQpjWRqGegg\nrtaWW36fsxkPJtN1sHAPqhqdNwKBgQDMS4UR+Nt1GwfmgXKO77f4K5ToOlrJyR16\nQfC0tuHldUo0tcUGVX8ZzllljOCtIgs0+sKR68lFeNCrSFPLyhGh5e/xWMGO7Lrj\nUxVja4qbzQ6PwyQwVYArfWgDd4p/EGR/2c+/Nrze+9wgB6Zj4Ol1LJ21It2ofOXt\nURGLd8CJdQKBgBE7qRcSw3rau1FmdR4ushjsHAx9WYUZ/4WZSuj6ywGVeAbZwfR/\n14Vo9TWDWgYm82z5Jeqdjuk/zU8TrBd1MZmXhxw02Rqa5jTqQJLIkU+MqxyB6e8E\nOO2GVDHemI++nPujcS1+UUD0chU/6/Ki/cBQG4lLQLW3K1jd4+xM/ENtAoGBAKs2\nL1Och+9gtAJOQj/gTwHBJI5rOWMbFYU8dgo9qpuu7H24SGLCjD6IXQtqQXFXsqS3\n8xBv1sJOOjMR7og/1P8lwS03ASBS7V1OaAJmQkfIVofNNyr6vOu1sdIWAQ/0IQW0\n+RJ7QVZvJVACmUPjXkRBG/qOOc3Wvqtg4Z9MwSNxAoGAIFKJIu51Y2LiZ7jgOK80\n8sCPUS/mYan4s2iPZBM7zAJ+40s9YIv9ZnHfiaF9XjLael/+FHaLXXAj8bRYAWVe\nxLVGiJ6ZCDHNKMGBi3KRqqms8PfukIG/MXWsvFONKmnIn7dofV8ryunxV+dDgUnx\n1xCAsoUY9vCnoW5U3xjxrns=\n-----END PRIVATE KEY-----\n",
+  "client_email": "myfirstproject@titanium-bus-362309.iam.gserviceaccount.com",
+  "client_id": "112768701610468810809",
+  "auth_uri": "https://accounts.google.com/o/oauth2/auth",
+  "token_uri": "https://oauth2.googleapis.com/token",
+  "auth_provider_x509_cert_url": "https://www.googleapis.com/oauth2/v1/certs",
+  "client_x509_cert_url": "https://www.googleapis.com/robot/v1/metadata/x509/myfirstproject%40titanium-bus-362309.iam.gserviceaccount.com"
+}

@@ -1,18 +1,15 @@
 import os
-import requests
 from datetime import datetime, timedelta
 
 from selenium import webdriver
 from selenium.webdriver.common.by import By
-
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy import Column, Integer, String
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
-
 from dotenv import load_dotenv
 
-load_dotenv()
+from gsheets import GoogleSheets
 
 ''' To retrieve total number of pages on the website, I can use regex like below, but taking into account that 
 it is stationary number I just preferred to hardcode it. 
@@ -21,22 +18,20 @@ total_pgs_str = driver.find_element(By.CLASS_NAME, "resultsShowingCount-17077621
 total_pgs = (re.search("of(.*)results", total_pgs_str.text)).group(1)
 MAX_PAGE_NUM = int(total_pgs)//40
 '''
-
-
+MAX_PAGE_NUM = 1
 TODAY = datetime.now().strftime("%d-%m-%Y")
 YESTERDAY = (datetime.now() - timedelta(1)).strftime("%d-%m-%Y")
 CHROME_DRIVER_PATH = "chromedriver"
-
-MAX_PAGE_NUM = 1
 PASSWORD = os.getenv('PASSWORD')
 # Scheme: "postgresql+psycopg2://<USERNAME>:<PASSWORD>@<IP_ADDRESS>:<PORT>/<DATABASE_NAME>"
 DATABASE_URI = f'postgresql+psycopg2://postgres:{PASSWORD}@localhost:5432/apartments'
-
 Base = declarative_base()
 engine = create_engine(DATABASE_URI)
+driver = webdriver.Chrome(executable_path=CHROME_DRIVER_PATH)
+load_dotenv()
+gsheet = GoogleSheets()
 Session = sessionmaker(bind=engine)  # To interact with the new table created
 s = Session()
-driver = webdriver.Chrome(executable_path=CHROME_DRIVER_PATH)
 
 
 def recreate_database():
@@ -90,6 +85,7 @@ for num in range(1, MAX_PAGE_NUM + 1):
     prices = [price.text[1:] if price.text != "Please Contact" else "n/a" for price in prices]
     currencies = [cur.text[0] for cur in currencies]
 
+    # ************** Save to DB **************
     for i in range(len(titles)):
         apartment = Apartment(
             Image=images[i],
@@ -104,27 +100,10 @@ for num in range(1, MAX_PAGE_NUM + 1):
         s.add(apartment)
     s.commit()
 
-    # ************** Upload data into Google Sheet **************
-    SHEET_ENDPOINT = "https://api.sheety.co/38e04257acb33302247cfa32529cf529/apartments/add"
-    try:
-        for i in range(len(titles)):
-            body = {
-                "add": {             # Don't forget to change 'add' to your sheet name
-                    "id": i + 1,
-                    "image": images[i],
-                    "title": titles[i],
-                    "date": dates[i],
-                    "location": locations[i],
-                    "bedroom": bedrooms[i],
-                    "description": descriptions[i],
-                    "price": prices[i],
-                    "currency": currencies[i]
-                }
-            }
-            sheet_response = requests.post(url=SHEET_ENDPOINT, json=body)
-    except requests.exceptions.MissingSchema:
-        print('Invalid SHEET_ENDPOINT URL. Valid URL structure is https://api.sheety.co/username/projectName/sheetName')
+    # ************** Save to Google Sheet **************
+    id_num = [i for i in range(1, len(titles))]
+    data = [id_num, images, titles, dates, locations, bedrooms, descriptions, prices, currencies]
+    gsheet.append_data(data)
 
 s.close()
-
 driver.quit()
