@@ -2,6 +2,8 @@ import os
 from datetime import datetime, timedelta
 
 from selenium import webdriver
+from selenium.webdriver.chrome.service import Service
+from webdriver_manager.chrome import ChromeDriverManager
 from selenium.webdriver.common.by import By
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy import Column, Integer, String
@@ -28,7 +30,7 @@ PASSWORD = os.getenv('PASSWORD')
 DATABASE_URI = f'postgresql+psycopg2://postgres:{PASSWORD}@localhost:5432/apartments'
 Base = declarative_base()
 engine = create_engine(DATABASE_URI)
-driver = webdriver.Chrome(executable_path=CHROME_DRIVER_PATH)
+driver = webdriver.Chrome(service=Service(ChromeDriverManager().install()))
 gsheet = GoogleSheets()
 Session = sessionmaker(bind=engine)  # To interact with the new table created
 s = Session()
@@ -101,8 +103,7 @@ for num in range(1, MAX_PAGE_NUM + 1):
     s.commit()
 
     # ************** Save to Google Sheet **************
-    id_num = [i for i in range(1, len(titles)+1)]
-    data = [id_num, images, titles, dates, locations, bedrooms, descriptions, prices, currencies]
+    data = [images, titles, dates, locations, bedrooms, descriptions, prices, currencies]
     gsheet.append_data(data)
 
 s.close()
