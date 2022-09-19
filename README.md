@@ -11,17 +11,16 @@ to collect all the data of apartment rental ads from multiple pages.
 - PostgreSQL
 - Google Sheets API 
 
-## How to Install and Run the Project
+## How to Install and Run the Project (without using Dockerfile)
 
 To start and run the project you have to:
 - Install the requirements (pip install -r requirements.txt)
-- The version of Chromedriver in the root folder must match the version of Chrome on your computer 
 - Change the value of the PASSWORD variable to your own PostgreSQL server password, if you have different database settings, use the scheme to construct the URI
 - Control the amount of data retrieved by changing the value of MAX_PAGE_NUM
 - Run main.py
 
 To upload data to google sheets you need to create your own:
-- Google spreadsheet. Fill in the head row (id	Image	Title	Date	Location	Bedroom	Description	Price	Currency)
+- Google spreadsheet. Fill in the head row (Image	Title	Date	Location	Bedroom	Description	Price	Currency)
 - SPREADSHEET_ID
 - SERVICE_ACCOUNT_FILE (file that contains the private key etc )
 Use [Develop on Google Workspace](https://developers.google.com/workspace/guides/get-started) overview or other sources to get all the above credentials
