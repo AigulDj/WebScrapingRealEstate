@@ -11,11 +11,10 @@ to collect all the data of apartment rental ads from multiple pages.
 - PostgreSQL
 - Google Sheets API 
 
-## How to Install and Run the Project
+## How to Install and Run the Project (without using Dockerfile)
 
 To start and run the project you have to:
 - Install the requirements (pip install -r requirements.txt)
-- The version of Chromedriver in the root folder must match the version of Chrome on your computer 
 - Change the value of the PASSWORD variable to your own PostgreSQL server password, if you have different database settings, use the scheme to construct the URI
 - Control the amount of data retrieved by changing the value of MAX_PAGE_NUM
 - Run main.py
