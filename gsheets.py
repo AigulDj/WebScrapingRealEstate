@@ -3,6 +3,9 @@ from google.oauth2 import service_account
 
 
 class GoogleSheets:
+    """This class builds connection with previously created google sheet.
+    There is a method 'append data' which append web scraped data to the connected google sheet.
+    """
     def __init__(self):
         self.SCOPES = ['https://www.googleapis.com/auth/spreadsheets']
         self.SERVICE_ACCOUNT_FILE = 'keys.json'
@@ -17,6 +20,10 @@ class GoogleSheets:
         # range = "Sheet1!A1:I50").execute()
 
     def append_data(self, data):
+        """This function appends values to the spreadsheet.
+        For more info visit 'https://developers.google.com/sheets/api/reference/rest/v4/spreadsheets.values'
+        :param data: lists of selenium objects converted to strings
+        """
         value_range_body = {
             'majorDimension': 'COLUMNS',
             'values': data

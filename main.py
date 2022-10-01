@@ -2,8 +2,7 @@ import os
 from datetime import datetime, timedelta
 
 from selenium import webdriver
-from selenium.webdriver.chrome.service import Service
-from webdriver_manager.chrome import ChromeDriverManager
+from selenium.webdriver.chrome.options import Options
 from selenium.webdriver.common.by import By
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy import Column, Integer, String
@@ -13,13 +12,7 @@ from dotenv import load_dotenv
 
 from gsheets import GoogleSheets
 
-''' To retrieve total number of pages on the website, I can use regex like below, but taking into account that 
-it is stationary number I just preferred to hardcode it. 
 
-total_pgs_str = driver.find_element(By.CLASS_NAME, "resultsShowingCount-1707762110")
-total_pgs = (re.search("of(.*)results", total_pgs_str.text)).group(1)
-MAX_PAGE_NUM = int(total_pgs)//40
-'''
 MAX_PAGE_NUM = 1
 TODAY = datetime.now().strftime("%d-%m-%Y")
 YESTERDAY = (datetime.now() - timedelta(1)).strftime("%d-%m-%Y")
@@ -30,18 +23,33 @@ PASSWORD = os.getenv('PASSWORD')
 DATABASE_URI = f'postgresql+psycopg2://postgres:{PASSWORD}@localhost:5432/apartments'
 Base = declarative_base()
 engine = create_engine(DATABASE_URI)
-driver = webdriver.Chrome(service=Service(ChromeDriverManager().install()))
 gsheet = GoogleSheets()
 Session = sessionmaker(bind=engine)  # To interact with the new table created
 s = Session()
 
 
+def set_chrome_options():
+    """Sets chrome options for Selenium.
+    Chrome options for headless browser is enabled.
+    """
+    chrome_options = Options()
+    chrome_options.add_argument("--headless")
+    chrome_options.add_argument("--no-sandbox")
+    chrome_options.add_argument("--disable-dev-shm-usage")
+    return chrome_options
+
+
 def recreate_database():
+    """This function deletes data table if it exists and creates a new one.
+    """
     Base.metadata.drop_all(engine)
     Base.metadata.create_all(engine)
 
 
 class Apartment(Base):
+    """This class creates table named 'apartments' with column names as given variables.
+    Be sure to pre-create a database in your PostgreSQL.
+    """
     __tablename__ = "apartments"
     id = Column(Integer(), primary_key=True)
     Image = Column(String())
@@ -60,6 +68,7 @@ class Apartment(Base):
 
 
 recreate_database()  # Change it to Base.metadata.create_all(engine) if no need to delete previous data in the table
+driver = webdriver.Chrome(options=set_chrome_options())
 
 for num in range(1, MAX_PAGE_NUM + 1):
     page_num = f"page-{num}"

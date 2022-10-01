@@ -16,4 +16,5 @@ venv/
 .vscode/
 data/
 ./postgres-data
-keys.json
+# keys.json
+*.sql
