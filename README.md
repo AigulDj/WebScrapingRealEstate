@@ -1,17 +1,16 @@
-# AigulDjon_Data-Ox_Test
-## Test Project
+# WebScrapingRealEstate
 
 Web scraping of [kijiji](https://www.kijiji.ca/b-apartments-condos/city-of-toronto/c37l1700273) website
 to collect all the data of apartment rental ads from multiple pages.
 
-## Tools used:
+### Tools used:
 - Python
 - Selenium 
 - SQLAlchemy
 - PostgreSQL
 - Google Sheets API 
 
-## How to Install and Run the Project (without using Dockerfile)
+### How to Install and Run the Project
 
 To start and run the project you have to:
 - Install the requirements (pip install -r requirements.txt)
