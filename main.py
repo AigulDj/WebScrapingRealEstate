@@ -1,6 +1,4 @@
 from datetime import datetime, timedelta
-from unicodedata import name
-from pip import main
 
 from selenium import webdriver
 from selenium.webdriver.chrome.options import Options
@@ -80,7 +78,3 @@ for num in range(1, MAX_PAGE_NUM + 1):
 
 s.close()
 driver.quit()
-
-
-if __name__ == '_main__':
-    main()
