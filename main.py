@@ -1,31 +1,20 @@
-import os
 from datetime import datetime, timedelta
+from unicodedata import name
+from pip import main
 
 from selenium import webdriver
 from selenium.webdriver.chrome.options import Options
 from selenium.webdriver.common.by import By
-from sqlalchemy.ext.declarative import declarative_base
-from sqlalchemy import Column, Integer, String
-from sqlalchemy import create_engine
-from sqlalchemy.orm import sessionmaker
-from dotenv import load_dotenv
 
 from gsheets import GoogleSheets
 
+from models import Apartment, Crud
 
 MAX_PAGE_NUM = 1
 TODAY = datetime.now().strftime("%d-%m-%Y")
 YESTERDAY = (datetime.now() - timedelta(1)).strftime("%d-%m-%Y")
 CHROME_DRIVER_PATH = "chromedriver"
-load_dotenv()
-PASSWORD = os.getenv('PASSWORD')
-# Scheme: "postgresql+psycopg2://<USERNAME>:<PASSWORD>@<IP_ADDRESS>:<PORT>/<DATABASE_NAME>"
-DATABASE_URI = f'postgresql+psycopg2://postgres:{PASSWORD}@localhost:5432/apartments'
-Base = declarative_base()
-engine = create_engine(DATABASE_URI)
 gsheet = GoogleSheets()
-Session = sessionmaker(bind=engine)  # To interact with the new table created
-s = Session()
 
 
 def set_chrome_options():
@@ -38,36 +27,10 @@ def set_chrome_options():
     chrome_options.add_argument("--disable-dev-shm-usage")
     return chrome_options
 
+s = Crud().Session()
 
-def recreate_database():
-    """This function deletes data table if it exists and creates a new one.
-    """
-    Base.metadata.drop_all(engine)
-    Base.metadata.create_all(engine)
-
-
-class Apartment(Base):
-    """This class creates table named 'apartments' with column names as given variables.
-    Be sure to pre-create a database in your PostgreSQL.
-    """
-    __tablename__ = "apartments"
-    id = Column(Integer(), primary_key=True)
-    Image = Column(String())
-    Title = Column(String(), nullable=False)
-    Date = Column(String())
-    Location = Column(String())
-    Bedroom = Column(String())
-    Description = Column(String())
-    Price = Column(String())
-    Currency = Column(String())
-
-    def __repr__(self):
-        return f"<Apartment(image='{self.Image}', title='{self.Title}', date='{self.Date}', " \
-               f"location='{self.Location}', bedroom='{self.Bedroom}', description='{self.Description}', " \
-               f"price='{self.Price}', currency='{self.Currency}')>"
-
-
-recreate_database()  # Change it to Base.metadata.create_all(engine) if no need to delete previous data in the table
+# Change it to Base.metadata.create_all(engine) if no need to delete previous data in the table
+Crud().recreate_database()  
 driver = webdriver.Chrome(options=set_chrome_options())
 
 for num in range(1, MAX_PAGE_NUM + 1):
@@ -75,7 +38,7 @@ for num in range(1, MAX_PAGE_NUM + 1):
     kijiji_URL = f"https://www.kijiji.ca/b-apartments-condos/city-of-toronto/{page_num}/c37l1700273"
     driver.get(kijiji_URL)
 
-    # Pars & retrieve data, get list of selenium objects.
+    # Parse & retrieve data, get list of selenium objects.
     images = driver.find_elements(By.CSS_SELECTOR, ".image img")
     titles = driver.find_elements(By.CSS_SELECTOR, '.title a')
     dates = driver.find_elements(By.CLASS_NAME, "date-posted")
@@ -117,3 +80,7 @@ for num in range(1, MAX_PAGE_NUM + 1):
 
 s.close()
 driver.quit()
+
+
+if __name__ == '_main__':
+    main()
